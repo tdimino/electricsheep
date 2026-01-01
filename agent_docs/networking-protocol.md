@@ -1,0 +1,118 @@
+# Networking Protocol
+
+## Overview
+
+Electric Sheep uses libcurl for all HTTP communication. The networking layer is in `client_generic/Networking/Networking.cpp` (13,163 lines).
+
+## Server Infrastructure
+
+| Server | IP | Purpose |
+|--------|---|---------|
+| `*.sheepserver.net` | 173.255.253.19 | Primary operations |
+| `*.us.archive.org` | 207.241.*.* | Free sheep CDN |
+| `d100rc88eim93q.cloudfront.net` | 54.192.55.139 | Gold sheep CDN |
+
+## API Endpoints
+
+### 1. Server Redirection
+```
+GET {REDIRECT_SERVER}/query.php?q=redir&u={username}&p={password}&v={version}&i={uniqueID}
+```
+**Response:** XML with server endpoints
+```xml
+<query>
+  <redir host="sheep.example.com" vote="vote.example.com" render="render.example.com" role="gold"/>
+</query>
+```
+Cache duration: 24 hours
+
+### 2. Sheep List
+```
+GET {serverName}/cgi/list?v={CLIENT_VERSION}&u={uniqueID}
+```
+**Response:** gzip-compressed XML
+```xml
+<list gen="42">
+  <sheep id="1234" type="0" time="1609459200" size="5242880"
+         rating="85" first="1230" last="1235" state="done"
+         url="http://server.net/sheep/1234.avi" />
+  <message>Server message</message>
+  <error type="unauthenticated">Auth failed</error>
+</list>
+```
+- `gen` < 10000 = normal sheep, >= 10000 = gold sheep
+- `first`/`last` = transition link IDs for morphing
+- `state="expunge"` = delete local copy
+
+### 3. Sheep Download
+```
+GET {sheep->URL()}
+Example: http://server.net/sheep/00042=01234=01230=01235.avi
+```
+File saved as: `{mpegPath}/{gen}={id}={first}={last}.avi`
+
+### 4. Genome Request (for rendering)
+```
+GET {renderServerName}/cgi/get?n={nickName}&w={userUrl}&v={version}&u={uniqueID}&r={rating}&c={cores}
+```
+**Response:** gzip-compressed FLAM3 genome XML
+
+### 5. Vote Submission
+```
+POST {voteServerName}/vote
+Content-Type: application/json
+{"sheep_id": "12345", "vote": 1}
+```
+
+### 6. Frame Upload (distributed rendering)
+```
+PUT {serverName}/cgi/put?j={jobId}&id={sheepId}&s={fileSize}&g={generation}&v={version}&u={uniqueID}
+Content: Raw JPEG frame data
+```
+
+## Authentication
+
+Password hashing: `MD5(nickname + 'sh33p' + username)`
+
+User roles:
+- `error` - Authentication failed
+- `none` - No account
+- `registered` - Basic account
+- `member` - Paid member
+- `gold` - Premium access
+
+## Network Classes
+
+### CCurlTransfer (Base)
+```cpp
+Perform(url)                    // Synchronous HTTP request
+InterruptiblePerform()          // Async with select() polling
+customProgressCallback()        // Update CManager::UpdateProgress()
+```
+
+### CFileDownloader
+```cpp
+Perform(url)                    // Download to m_Data buffer
+Save(outputPath)                // Write buffer to disk
+// Pre-allocates 10MB buffer
+```
+
+### CFileUploader
+```cpp
+PerformUpload(url, file, size)  // Upload file via PUT
+```
+
+## Security Notes
+
+SSL verification is **disabled** in the codebase:
+```cpp
+curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYHOST, 0);
+curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYPEER, 0);
+```
+URLs are forced to HTTPS in `Sheep::setURL()`.
+
+## Retry Logic
+
+- Success: Reset to `TIMEOUT` (600s)
+- Failure: Exponential backoff up to `MAX_TIMEOUT` (86400s / 1 day)
+- Formula: `sleep = Clamp(sleep * 2, 600, 86400)`

@@ -28,3 +28,4 @@ client_generic/depcomp
 client_generic/install-sh
 client_generic/libtool
 client_generic/ltmain.sh
+.osgrep

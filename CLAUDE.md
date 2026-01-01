@@ -4,7 +4,29 @@ Distributed computing screensaver that evolves abstract fractal flame animations
 
 ## Goal
 
-Create a **Companion App architecture** to restore full functionality on modern macOS (see `docs/electric-sheep-macos-patch.md`).
+Create a **Companion App architecture** to restore full functionality on modern macOS.
+
+## Documentation
+
+**For Claude Code (agent_docs/):**
+- `agent_docs/macos-architecture.md` - How the macOS screensaver works
+- `agent_docs/networking-protocol.md` - Server communication & download flow
+- `agent_docs/rendering-pipeline.md` - FFmpeg decode to OpenGL display
+- `agent_docs/companion-app-research.md` - Aerial Companion patterns
+- `agent_docs/code-bridge.md` - Objective-C ↔ C++ bridge layer
+- `agent_docs/file-formats.md` - Cache structure, genome XML, video formats
+
+**For developers (docs/):**
+- `docs/macos-screensaver-sandbox.md` - The Catalina problem explained
+- `docs/companion-app-design.md` - Architecture for our solution
+- `docs/existing-codebase-map.md` - Directory and file purposes
+- `docs/server-api-reference.md` - Electric Sheep server endpoints
+- `docs/build-instructions.md` - How to build the project
+
+**Project planning:**
+- `MANIFESTO.md` - Full project vision and technical plan
+- `ROADMAP.md` - Milestones and progress tracking
+- `plans/` - Detailed implementation phases
 
 ## Stack
 
@@ -90,6 +112,20 @@ open client_generic/MacBuild/ElectricSheep.xcodeproj
 - **flam3**: `github.com/scottdraves/flam3` - Fractal flame renderer
 - **Aerial**: `github.com/JohnCoates/Aerial` - Reference companion app architecture
 - **Infinidream**: `infinidream.ai` - Scott Draves' new project (1080p sheep)
+
+## Available Tools
+
+This directory is indexed with **OSGrep** for semantic code search:
+```bash
+osgrep "how does sheep downloading work"  # Query the codebase
+osgrep symbols Sheep                       # Find symbol definitions
+osgrep trace SheepDownloader               # Trace call graphs
+```
+
+Additional research tools available:
+- **Firecrawl** - Web scraping and URL content extraction
+- **Exa Search** - Neural web search with category filtering
+- **Ghidra** - Binary analysis if needed for reverse engineering
 
 ## License
 
