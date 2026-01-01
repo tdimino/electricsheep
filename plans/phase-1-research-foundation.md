@@ -27,10 +27,10 @@ Build a comprehensive understanding of the Electric Sheep codebase and the Aeria
 - `MacBuild/ESConfiguration.m` - Settings/preferences
 
 **Deliverables:**
-- [ ] Document reusable components
-- [ ] Identify code that must be rewritten in Swift
-- [ ] Map data flow for sheep downloading
-- [ ] Understand genome XML format
+- [x] Document reusable components (`agent_docs/code-bridge.md`)
+- [x] Identify code that must be rewritten in Swift (`plans/decision-reuse-vs-rewrite.md`)
+- [x] Map data flow for sheep downloading (`agent_docs/networking-protocol.md`)
+- [x] Understand genome XML format (`agent_docs/file-formats.md`)
 
 ### 1.2 Study Aerial Companion Architecture
 
@@ -55,9 +55,9 @@ Build a comprehensive understanding of the Electric Sheep codebase and the Aeria
    - Auto-update via Homebrew
 
 **Deliverables:**
-- [ ] Document Aerial's architecture decisions
-- [ ] Identify patterns to adopt
-- [ ] Note differences (Electric Sheep has server rendering, voting)
+- [x] Document Aerial's architecture decisions (`agent_docs/companion-app-research.md`)
+- [x] Identify patterns to adopt (manifest-based updates, menu bar, LaunchAtLogin)
+- [x] Note differences (Electric Sheep has server rendering, voting)
 
 ### 1.3 Server Protocol Research
 
@@ -75,16 +75,20 @@ Build a comprehensive understanding of the Electric Sheep codebase and the Aeria
 - Vote submission API
 
 **Deliverables:**
-- [ ] Document all API endpoints
-- [ ] Capture sample requests/responses
-- [ ] Identify authentication mechanism for Gold Sheep
+- [x] Document all API endpoints (`docs/server-api-reference.md`)
+- [x] Capture sample requests/responses (validated live - see `agent_docs/networking-protocol.md`)
+- [x] Identify authentication mechanism for Gold Sheep (MD5 hash, CloudFront CDN)
 
 ## Success Criteria
 
-- [ ] Complete architecture diagram of existing Electric Sheep client
-- [ ] Decision document: what to reuse vs. rewrite
-- [ ] API documentation for Electric Sheep servers
-- [ ] Aerial Companion patterns documented
+- [x] Complete architecture diagram of existing Electric Sheep client (`docs/existing-codebase-map.md`)
+- [x] Decision document: what to reuse vs. rewrite (`plans/decision-reuse-vs-rewrite.md`)
+- [x] API documentation for Electric Sheep servers (`docs/server-api-reference.md`)
+- [x] Aerial Companion patterns documented (`agent_docs/companion-app-research.md`)
+
+## Status: COMPLETE (January 2026)
+
+All Phase 1 deliverables completed. Server connectivity verified. Ready for Phase 2.
 
 ## Dependencies
 

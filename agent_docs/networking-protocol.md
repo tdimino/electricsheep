@@ -116,3 +116,41 @@ URLs are forced to HTTPS in `Sheep::setURL()`.
 - Success: Reset to `TIMEOUT` (600s)
 - Failure: Exponential backoff up to `MAX_TIMEOUT` (86400s / 1 day)
 - Formula: `sleep = Clamp(sleep * 2, 600, 86400)`
+
+## Live Validation (January 2026)
+
+Servers verified operational:
+
+| Endpoint | Status | Notes |
+|----------|--------|-------|
+| `community.sheepserver.net` | **UP** | Self-signed SSL (use HTTP or --insecure) |
+| `v3d0.sheepserver.net` | **UP** | Returned by redirect query |
+| `archive.org` | **UP** | CDN for sheep videos |
+
+### Redirect Response
+```
+GET http://community.sheepserver.net/query.php?q=redir&v=3.0.3&i=test
+```
+Returns:
+```xml
+<query><redir role="none" host="http://v3d0.sheepserver.net/" vote="http://v3d0.sheepserver.net/" render="http://v3d0.sheepserver.net/"/></query>
+```
+
+### Sheep List Response
+```
+GET http://v3d0.sheepserver.net/cgi/list?v=3.0.3&u=test | gunzip
+```
+Returns gzip-compressed XML with current generation 248:
+```xml
+<list gen="248" size="800 592" retry="600">
+  <sheep id="37653" type="0" state="done" time="1767023148" size="1358314"
+         rating="2" first="37653" last="37653"
+         url="http://www.archive.org/download/electricsheep-flock-248-37500-3/00248=37653=37653=37653.avi"/>
+</list>
+```
+
+### Download Verification
+Sample download confirmed:
+- URL: `http://www.archive.org/download/electricsheep-flock-248-37500-3/00248=37653=37653=37653.avi`
+- Size: 1,358,314 bytes (matches XML)
+- Format: RIFF/AVI, H.264 video, 800x592 @ 30fps

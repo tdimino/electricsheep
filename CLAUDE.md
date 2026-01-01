@@ -5,6 +5,8 @@ Distributed computing screensaver that evolves abstract fractal flame animations
 ## Rules
 
 - Do not commit unless explicitly requested
+- Use Firecrawl for web page fetching (not WebFetch)
+- Use Exa Search skill for web searching
 
 ## Goal
 
@@ -26,6 +28,7 @@ Create a **Companion App architecture** to restore full functionality on modern 
 - `docs/existing-codebase-map.md` - Directory and file purposes
 - `docs/server-api-reference.md` - Electric Sheep server endpoints
 - `docs/build-instructions.md` - How to build the project
+- `docs/resolution-compatibility.md` - Modern display resolution options
 
 **Project planning:**
 - `MANIFESTO.md` - Full project vision and technical plan

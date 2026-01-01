@@ -255,3 +255,25 @@ Stored in Keychain on macOS.
 - Use HTTPS exclusively
 - Implement certificate pinning
 - Store credentials in Keychain only
+
+---
+
+## Live Server Status (January 2026)
+
+All servers verified operational:
+
+| Server | Status | Protocol |
+|--------|--------|----------|
+| `community.sheepserver.net` | UP | HTTP (self-signed SSL cert) |
+| `v3d0.sheepserver.net` | UP | HTTP |
+| `archive.org` | UP | HTTPS |
+
+**Current Generation:** 248
+**Video Resolution:** 800x592
+**Video Format:** H.264 in AVI container
+
+### Verified Workflow
+1. Redirect query returns `v3d0.sheepserver.net`
+2. List endpoint returns gzip XML with sheep metadata
+3. Videos hosted on archive.org with expected naming pattern
+4. Download returns valid AVI files matching reported sizes
