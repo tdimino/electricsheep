@@ -2,6 +2,10 @@
 
 Distributed computing screensaver that evolves abstract fractal flame animations via genetic algorithms. Created by Scott Draves in 1999. Currently broken on macOS Catalina+ due to screensaver sandboxing.
 
+## Rules
+
+- Do not commit unless explicitly requested
+
 ## Goal
 
 Create a **Companion App architecture** to restore full functionality on modern macOS.
