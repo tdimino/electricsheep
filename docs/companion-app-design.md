@@ -314,3 +314,76 @@ Or per-file:
 #include <OpenGL/gl.h>
 #pragma clang diagnostic pop
 ```
+
+---
+
+## Implementation Notes (January 2026)
+
+### What We Actually Built
+
+The companion app was implemented with a **pure Swift** approach instead of the ObjC++ bridge originally planned. This simplified the architecture significantly:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ElectricSheepCompanion.app                   │
+│                         (Pure Swift)                            │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
+│  │  Menu Bar   │  │ Preferences │  │   Download Manager      │  │
+│  │  (SwiftUI)  │  │  (SwiftUI)  │  │   (URLSession)          │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────────┘  │
+│                                                                  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │  Cache Manager  │  Vote Manager  │  Notification Bridge  │   │
+│  │  (FileManager)  │  (Carbon API)  │  (CFNotificationCenter)│  │
+│  └──────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Key Implementation Decisions
+
+| Planned | Actual | Rationale |
+|---------|--------|-----------|
+| ObjC++ bridge to C++ libcurl | Pure Swift URLSession | Simpler, no build complexity |
+| C++ TinyXML parser | Swift XMLParser (Foundation) | Built-in, no dependencies |
+| macOS 10.15 target | macOS 12.0 target | SwiftUI features required it |
+| 'ES' text icon | Cloud-sync icon (Iconoir) | More distinctive, recognizable |
+
+### Server Protocol Discoveries
+
+1. **Gzip compression**: Server returns gzip-compressed XML for sheep lists. URLSession doesn't auto-decompress when `Accept-Encoding: gzip` is sent. Manual decompression required using Apple's Compression framework.
+
+2. **SSL certificates**: sheepserver.net uses self-signed certificates. Required URLSessionDelegate to bypass SSL verification for known hosts.
+
+3. **HTTP not HTTPS**: The server works better with HTTP. App Transport Security exception added via `NSAllowsArbitraryLoads`.
+
+4. **Sheep list URL**: `http://v3d0.sheepserver.net/cgi/list?v=OSX_C_1.0.0&u=<uuid>`
+
+5. **File format**: Sheep are downloaded as `.avi` files with naming convention: `<gen>_<id>_<first>_<last>.avi`
+
+### Build System
+
+Using **XcodeGen** for headless project generation:
+
+```bash
+cd Companion/ElectricSheepCompanion
+xcodegen generate
+xcodebuild -scheme ElectricSheepCompanion -configuration Debug build
+```
+
+### File Locations
+
+| Component | Path |
+|-----------|------|
+| Source code | `Companion/ElectricSheepCompanion/Sources/` |
+| XcodeGen spec | `Companion/ElectricSheepCompanion/project.yml` |
+| Built app | `~/Library/Developer/Xcode/DerivedData/.../ElectricSheepCompanion.app` |
+| Sheep cache | `~/Library/Application Support/ElectricSheep/sheep/free/` |
+| Preferences | `~/Library/Preferences/org.electricsheep.companion.plist` |
+
+### Sync Behavior
+
+- On launch: Fetches sheep list, downloads all new sheep
+- After download queue empty: Waits 1 hour before next sync
+- On error: Exponential backoff (10 min → 24 hours max)
+- Cache limit: Default 2 GB, configurable 1-20 GB in Preferences

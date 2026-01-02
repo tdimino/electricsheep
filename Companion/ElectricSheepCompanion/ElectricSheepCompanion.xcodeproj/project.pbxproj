@@ -1,0 +1,356 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		018284F93CEADDA773A742D9 /* ElectricSheepCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE40E47D400B9F75195D7561 /* ElectricSheepCompanionApp.swift */; };
+		10EF13E210DA7EEB5D3E73AA /* SheepInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9618813B267A51868F9066E /* SheepInfo.swift */; };
+		3CE890ED2B22228E1D98EAC1 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85E6CE5868C2F338DA0308E5 /* DownloadManager.swift */; };
+		4FC40E49854F39AD9F1076C6 /* NotificationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E79F4843302F24BCCA9E4B /* NotificationBridge.swift */; };
+		53D65EBD3BF1E02DFE37D181 /* VoteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 678962370FAC1ED83A5E3099 /* VoteManager.swift */; };
+		6461265D52E82EFE08B86EF0 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7024DBB9E9D4C26C8FFEE29B /* CacheManager.swift */; };
+		73D089479C6F69FABB850DF1 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7B3FEA40419B2CAFCBB126 /* PreferencesView.swift */; };
+		80137F5DF3CD2950AFCB0836 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883F160C7E75676E894581DA /* MenuBarController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		678962370FAC1ED83A5E3099 /* VoteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoteManager.swift; sourceTree = "<group>"; };
+		7024DBB9E9D4C26C8FFEE29B /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		7EF683992540CBFBF0264237 /* ElectricSheepCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ElectricSheepCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		85E6CE5868C2F338DA0308E5 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		883F160C7E75676E894581DA /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		9A7B3FEA40419B2CAFCBB126 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		B5E79F4843302F24BCCA9E4B /* NotificationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBridge.swift; sourceTree = "<group>"; };
+		BE40E47D400B9F75195D7561 /* ElectricSheepCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricSheepCompanionApp.swift; sourceTree = "<group>"; };
+		C9618813B267A51868F9066E /* SheepInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SheepInfo.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		38BAB425CFF84626895E5C84 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				6081619E5E7941A66C5BAA1A /* App */,
+				914629EB423C69BB68F0BB72 /* Bridge */,
+				7109E46D3761FE43C0204E1B /* Models */,
+				3AA4343EEE7476F1764D70E8 /* Services */,
+				ADB2828356847D749BD8A72F /* UI */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		3AA4343EEE7476F1764D70E8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				7024DBB9E9D4C26C8FFEE29B /* CacheManager.swift */,
+				85E6CE5868C2F338DA0308E5 /* DownloadManager.swift */,
+				678962370FAC1ED83A5E3099 /* VoteManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		6081619E5E7941A66C5BAA1A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				BE40E47D400B9F75195D7561 /* ElectricSheepCompanionApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		7109E46D3761FE43C0204E1B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C9618813B267A51868F9066E /* SheepInfo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		914629EB423C69BB68F0BB72 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				B5E79F4843302F24BCCA9E4B /* NotificationBridge.swift */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		ADB2828356847D749BD8A72F /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				883F160C7E75676E894581DA /* MenuBarController.swift */,
+				9A7B3FEA40419B2CAFCBB126 /* PreferencesView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		D4C87D6B3BE5F152431BE4E3 = {
+			isa = PBXGroup;
+			children = (
+				38BAB425CFF84626895E5C84 /* Sources */,
+				DEB779436259A9C2C35B181A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DEB779436259A9C2C35B181A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7EF683992540CBFBF0264237 /* ElectricSheepCompanion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EDE9E8B4B5CC064C18915D95 /* ElectricSheepCompanion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A981E2AB7B42D760A0CB51F0 /* Build configuration list for PBXNativeTarget "ElectricSheepCompanion" */;
+			buildPhases = (
+				2D3F501C011B8E19B6EDB88A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ElectricSheepCompanion;
+			packageProductDependencies = (
+			);
+			productName = ElectricSheepCompanion;
+			productReference = 7EF683992540CBFBF0264237 /* ElectricSheepCompanion.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		45B2B3F27673093451679C75 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					EDE9E8B4B5CC064C18915D95 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = DC7C3295043913B92F8982A8 /* Build configuration list for PBXProject "ElectricSheepCompanion" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D4C87D6B3BE5F152431BE4E3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EDE9E8B4B5CC064C18915D95 /* ElectricSheepCompanion */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2D3F501C011B8E19B6EDB88A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6461265D52E82EFE08B86EF0 /* CacheManager.swift in Sources */,
+				3CE890ED2B22228E1D98EAC1 /* DownloadManager.swift in Sources */,
+				018284F93CEADDA773A742D9 /* ElectricSheepCompanionApp.swift in Sources */,
+				80137F5DF3CD2950AFCB0836 /* MenuBarController.swift in Sources */,
+				4FC40E49854F39AD9F1076C6 /* NotificationBridge.swift in Sources */,
+				73D089479C6F69FABB850DF1 /* PreferencesView.swift in Sources */,
+				10EF13E210DA7EEB5D3E73AA /* SheepInfo.swift in Sources */,
+				53D65EBD3BF1E02DFE37D181 /* VoteManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		712D62DFC3FA898EDA3ED219 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ElectricSheepCompanion.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.electricsheep.companion;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B264BDECA31E0BE6C76D256C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		DABF6866E4D1CBD9418BBBC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ElectricSheepCompanion.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = org.electricsheep.companion;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EE95D15DAE5BA0B61B52A74D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A981E2AB7B42D760A0CB51F0 /* Build configuration list for PBXNativeTarget "ElectricSheepCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DABF6866E4D1CBD9418BBBC2 /* Debug */,
+				712D62DFC3FA898EDA3ED219 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DC7C3295043913B92F8982A8 /* Build configuration list for PBXProject "ElectricSheepCompanion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B264BDECA31E0BE6C76D256C /* Debug */,
+				EE95D15DAE5BA0B61B52A74D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 45B2B3F27673093451679C75 /* Project object */;
+}

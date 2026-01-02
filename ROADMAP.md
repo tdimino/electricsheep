@@ -1,8 +1,8 @@
 # Roadmap
 
-## Current Status: Phase 1 Complete, Phase 2 Ready
+## Current Status: Phase 2 Complete
 
-Phase 1 research complete. Server connectivity verified. Ready for companion app development.
+Phase 2 companion app complete. Pure Swift implementation with working sheep downloads. Ready for screensaver integration.
 
 ---
 
@@ -12,18 +12,18 @@ Phase 1 research complete. Server connectivity verified. Ready for companion app
 
 **Goal:** Full core functionality on macOS Catalina+ (10.15 - 14.x)
 
-- [ ] **Companion App**
-  - Menu bar presence with 'ES' icon + sheep count badge
-  - ObjC++ bridge to reuse C++ networking code
+- [x] **Companion App** ✓ (January 2026)
+  - Menu bar presence with cloud-sync icon + sheep count badge
+  - Pure Swift URLSession networking (no C++ bridge needed)
   - Auto-start downloads on launch
-  - Preferences window (cache size, launch at login)
-  - Companion installs screensaver automatically
+  - Preferences window (cache size 1-20 GB, launch at login)
+  - Built with XcodeGen for headless CI/CD
 
-- [ ] **Sheep Downloading**
-  - Connect to sheepserver.net and archive.org
-  - Download and cache sheep videos (800x598)
-  - LRU cache eviction by playback time
-  - Silent retry with exponential backoff
+- [x] **Sheep Downloading** ✓ (January 2026)
+  - Connect to sheepserver.net (v3d0.sheepserver.net)
+  - Download and cache sheep videos (.avi format)
+  - Cache eviction when exceeding size limit
+  - Silent retry with exponential backoff (10min → 24hr)
 
 - [ ] **Voting System**
   - Global hotkeys (Cmd+Up/Down) via companion
@@ -100,8 +100,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to help with any miles
 | Phase | Status | Completion |
 |-------|--------|------------|
 | Phase 0: Planning | Complete | 100% |
-| Phase 1: Research | **Complete** | 100% |
-| Phase 2: Companion App | Ready to Start | 0% |
-| Phase 3: Screensaver | Blocked by Phase 2 | 0% |
-| Phase 4: IPC | Blocked by Phase 2 | 0% |
-| Phase 5: Server | Blocked by Phase 2 | 0% |
+| Phase 1: Research | Complete | 100% |
+| Phase 2: Companion App | **Complete** | 100% |
+| Phase 3: Screensaver | Ready to Start | 0% |
+| Phase 4: IPC | Blocked by Phase 3 | 0% |
+| Phase 5: Voting | Blocked by Phase 3 | 0% |

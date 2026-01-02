@@ -165,3 +165,76 @@ Sample download confirmed:
 - URL: `http://www.archive.org/download/electricsheep-flock-248-37500-3/00248=37653=37653=37653.avi`
 - Size: 1,358,314 bytes (matches XML)
 - Format: RIFF/AVI, H.264 video, 800x592 @ 30fps
+
+---
+
+## Swift Implementation Notes (January 2026)
+
+### Gzip Decompression
+
+The sheep list response is gzip-compressed. When using Swift's URLSession:
+
+1. **URLSession does NOT auto-decompress** when you set `Accept-Encoding: gzip`
+2. Must manually detect gzip magic bytes (`0x1f 0x8b`) and decompress
+3. Use Apple's Compression framework with `COMPRESSION_ZLIB`
+
+**Gzip structure:**
+```
+[10-byte header][optional fields][DEFLATE data][8-byte trailer]
+```
+
+Header parsing required:
+- Byte 3 = flags (FEXTRA=0x04, FNAME=0x08, FCOMMENT=0x10, FHCRC=0x02)
+- Skip variable-length fields before DEFLATE data
+- Strip 8-byte trailer (CRC32 + original size)
+
+### SSL Certificate Handling
+
+sheepserver.net uses self-signed certificates. In Swift:
+
+```swift
+extension DownloadManager: URLSessionDelegate {
+    func urlSession(_ session: URLSession,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+           let serverTrust = challenge.protectionSpace.serverTrust {
+            let host = challenge.protectionSpace.host
+            if host.contains("sheepserver.net") || host.contains("archive.org") {
+                completionHandler(.useCredential, URLCredential(trust: serverTrust))
+                return
+            }
+        }
+        completionHandler(.performDefaultHandling, nil)
+    }
+}
+```
+
+### App Transport Security
+
+Since the server uses HTTP (not HTTPS), add to Info.plist:
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+```
+
+### File Naming Convention
+
+Sheep files use underscores (not equals signs) in Swift implementation:
+- Server XML: `url="...00248=37653=37653=37653.avi"`
+- Local cache: `0_37653_37653_37653.avi`
+
+Format: `{generation}_{id}_{first}_{last}.avi`
+
+### Sync Timing
+
+| Event | Delay |
+|-------|-------|
+| After successful sync | 1 hour (3600s) |
+| Initial retry on error | 10 minutes (600s) |
+| Max retry backoff | 24 hours (86400s) |
+| Low disk space retry | 5 minutes (300s) |

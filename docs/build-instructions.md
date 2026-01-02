@@ -3,10 +3,12 @@
 ## Prerequisites
 
 ### System Requirements
-- macOS 10.15 Catalina or later
+- macOS 12.0 Monterey or later (for companion app)
+- macOS 10.15 Catalina or later (for screensaver only)
 - Xcode 14 or later
 - Command Line Tools: `xcode-select --install`
-- Apple Developer account (for code signing)
+- XcodeGen: `brew install xcodegen` (for companion app)
+- Apple Developer account (for code signing, optional for local builds)
 
 ### Dependencies
 The repository includes bundled dependencies in the Xcode project:
@@ -121,24 +123,91 @@ codesign -s "Developer ID Application: YOUR NAME" /path/to/ElectricSheep.app
 Remember: The screensaver cannot access network in macOS 10.15+.
 For testing network code, build and run as Application, not Screensaver.
 
-## Companion App Build (Future)
+## Companion App Build
 
-The companion app will be a separate Xcode project:
+The companion app is a pure Swift menu bar app that handles sheep downloads.
 
-```
-companion/
-├── ElectricSheepCompanion.xcodeproj
-├── Sources/
-│   ├── App/
-│   ├── Networking/
-│   └── UI/
-└── Resources/
-```
+### Prerequisites
 
-Build with:
 ```bash
-cd companion
-xcodebuild -scheme ElectricSheepCompanion -configuration Release
+# Install XcodeGen (one-time)
+brew install xcodegen
+```
+
+### Project Structure
+
+```
+Companion/ElectricSheepCompanion/
+├── project.yml              # XcodeGen specification
+├── Info.plist
+├── ElectricSheepCompanion.entitlements
+└── Sources/
+    ├── App/
+    │   └── ElectricSheepCompanionApp.swift
+    ├── UI/
+    │   ├── MenuBarController.swift
+    │   └── PreferencesView.swift
+    ├── Services/
+    │   ├── DownloadManager.swift
+    │   ├── CacheManager.swift
+    │   └── VoteManager.swift
+    ├── Models/
+    │   └── SheepInfo.swift
+    └── Bridge/
+        └── NotificationBridge.swift
+```
+
+### Build Commands
+
+```bash
+cd Companion/ElectricSheepCompanion
+
+# Generate Xcode project from project.yml
+xcodegen generate
+
+# Build Debug
+xcodebuild -scheme ElectricSheepCompanion -configuration Debug build
+
+# Build Release
+xcodebuild -scheme ElectricSheepCompanion -configuration Release build
+```
+
+### Run the App
+
+After building, the app is in DerivedData:
+
+```bash
+# Find and run
+open ~/Library/Developer/Xcode/DerivedData/ElectricSheepCompanion-*/Build/Products/Debug/ElectricSheepCompanion.app
+```
+
+Or install to Applications:
+
+```bash
+cp -r ~/Library/Developer/Xcode/DerivedData/ElectricSheepCompanion-*/Build/Products/Release/ElectricSheepCompanion.app /Applications/
+```
+
+### Verify It's Working
+
+The app appears in the menu bar with a cloud-sync icon and sheep count. Check downloads:
+
+```bash
+ls ~/Library/Application\ Support/ElectricSheep/sheep/free/
+```
+
+### Configuration
+
+Preferences are stored in UserDefaults:
+
+```bash
+# View current settings
+defaults read org.electricsheep.companion
+
+# Set cache size (GB)
+defaults write org.electricsheep.companion cacheSizeGB -float 2.0
+
+# Reset to defaults
+defaults delete org.electricsheep.companion
 ```
 
 ## Archive for Distribution

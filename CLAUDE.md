@@ -7,6 +7,7 @@ Distributed computing screensaver that evolves abstract fractal flame animations
 - Do not commit unless explicitly requested
 - Use Firecrawl for web page fetching (not WebFetch)
 - Use Exa Search skill for web searching
+- Use XcodeGen for headless Xcode project creation (not GUI)
 
 ## Goal
 
