@@ -256,7 +256,7 @@ ElectricSheep/
 
 **Feedback:** Subtle overlay (up/down arrow) appears briefly on screensaver
 
-- [ ] Register global hotkeys using HotKey Swift package (github.com/soffes/HotKey)
+- [ ] Register global hotkeys using KeyboardShortcuts package (github.com/sindresorhus/KeyboardShortcuts)
 - [ ] Implement screensaver query protocol via distributed notifications
 - [ ] Implement vote submission via bridge
 - [ ] Implement vote feedback notification to screensaver

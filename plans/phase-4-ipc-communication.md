@@ -10,7 +10,7 @@ Establish reliable communication between the companion app and the sandboxed scr
 |----------|--------|-----------|
 | Payload mechanism | Notification name suffix | Encode data as `org.electricsheep.SheepPlaying.248=12345=0=240` |
 | Vote race handling | Queue votes | Queue second vote, process after first completes |
-| Global hotkey API | HotKey (Swift) | Modern Swift package by @soffes, lightweight, MIT license |
+| Global hotkey API | KeyboardShortcuts | @sindresorhus package, better macOS 15+ fullscreen support |
 | Vote overlay style | Corner arrow + fade | Fade in 0.3s → hold 1.5s → fade out 0.5s |
 | Companion detection | Listen for broadcast | Companion broadcasts ESCompanionLaunched on startup |
 | LRU tracking frequency | Once per sheep start | Fire once when sheep begins playing |
@@ -236,40 +236,42 @@ class NotificationBridge {
 ### 4.4 Global Hotkey Manager
 
 ```swift
-import HotKey  // github.com/soffes/HotKey
+import KeyboardShortcuts  // github.com/sindresorhus/KeyboardShortcuts
+
+// Define shortcut names
+extension KeyboardShortcuts.Name {
+    static let voteUp = Self("voteUp", default: .init(.upArrow, modifiers: .command))
+    static let voteDown = Self("voteDown", default: .init(.downArrow, modifiers: .command))
+}
 
 class GlobalHotkeyManager {
-    private var upHotKey: HotKey?
-    private var downHotKey: HotKey?
     private let voteManager: VoteManager
 
     func register() {
-        // Cmd+Up for upvote
-        upHotKey = HotKey(key: .upArrow, modifiers: [.command])
-        upHotKey?.keyDownHandler = { [weak self] in
+        KeyboardShortcuts.onKeyUp(for: .voteUp) { [weak self] in
             self?.voteManager.queueVote(direction: .up)
         }
 
-        // Cmd+Down for downvote
-        downHotKey = HotKey(key: .downArrow, modifiers: [.command])
-        downHotKey?.keyDownHandler = { [weak self] in
+        KeyboardShortcuts.onKeyUp(for: .voteDown) { [weak self] in
             self?.voteManager.queueVote(direction: .down)
         }
     }
 
     func unregister() {
-        upHotKey = nil
-        downHotKey = nil
+        KeyboardShortcuts.disable(.voteUp)
+        KeyboardShortcuts.disable(.voteDown)
     }
 }
 ```
 
-**Note:** HotKey library may require Accessibility permission. Handle permission prompt gracefully.
+**Note:** KeyboardShortcuts requires Input Monitoring permission on macOS 15+. The library handles the permission prompt automatically.
 
-- [ ] Add HotKey Swift package dependency
+**Why KeyboardShortcuts over HotKey:** Carbon-based hotkeys (used by HotKey) don't work reliably in fullscreen apps on macOS 15+. KeyboardShortcuts has better compatibility.
+
+- [ ] Add KeyboardShortcuts Swift package dependency
 - [ ] Implement GlobalHotkeyManager
 - [ ] Register Cmd+Up and Cmd+Down hotkeys
-- [ ] Handle Accessibility permission request/denial
+- [ ] Handle Input Monitoring permission request/denial
 - [ ] Unregister on app quit
 
 ### 4.5 Voting Flow
@@ -477,7 +479,7 @@ View logs: `log stream --predicate 'subsystem == "org.electricsheep"'`
 - [ ] ESNotificationParser.h for suffix encoding/decoding
 - [ ] NotificationBridge class in companion (handles all incoming notifications)
 - [ ] ESNotificationHandler class in screensaver (handles all incoming notifications)
-- [ ] GlobalHotkeyManager with HotKey package
+- [ ] GlobalHotkeyManager with KeyboardShortcuts package
 - [ ] VoteManager with queue and silent failure
 - [ ] Full voting flow with corner arrow overlay
 - [ ] Companion detection with passive ESCompanionLaunched listening
@@ -503,4 +505,4 @@ View logs: `log stream --predicate 'subsystem == "org.electricsheep"'`
 
 - Phase 2 companion app with download manager
 - Phase 3 screensaver with HUD overlay system
-- HotKey Swift package (github.com/soffes/HotKey)
+- KeyboardShortcuts Swift package (github.com/sindresorhus/KeyboardShortcuts)

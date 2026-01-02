@@ -127,3 +127,51 @@ Screensaver becomes read-only display component.
 - `AerialUpdater/` - Main companion app code
 - `manifest.json` - Version/hash manifest format
 - `AerialMusicHelper/` - Background helper pattern
+
+## Global Hotkey Research (January 2026)
+
+### Package Options
+
+| Package | Maintainer | API | macOS 15+ Fullscreen |
+|---------|------------|-----|----------------------|
+| [HotKey](https://github.com/soffes/HotKey) | @soffes | Carbon API | **Broken** |
+| [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) | @sindresorhus | Carbon + workarounds | Better support |
+| [SwiftKeys](https://github.com/jordanbaird/SwiftKeys) | @jordanbaird | Modern API | Unknown |
+
+### Critical Finding
+
+**Carbon-based global hotkeys don't work reliably in fullscreen on macOS 15+** (Sequoia). The fix is to use `CGEvent.tapCreate` API instead of Carbon, which requires Input Monitoring permission.
+
+### Recommendation
+
+1. **Primary**: Use `sindresorhus/KeyboardShortcuts` (2.0.1+) - more actively maintained
+2. **Fallback**: If fullscreen issues persist, implement CGEvent-based hotkeys manually
+3. **Permission**: Request Input Monitoring permission in System Preferences
+
+### Code Example (KeyboardShortcuts)
+
+```swift
+import KeyboardShortcuts
+
+extension KeyboardShortcuts.Name {
+    static let voteUp = Self("voteUp", default: .init(.upArrow, modifiers: .command))
+    static let voteDown = Self("voteDown", default: .init(.downArrow, modifiers: .command))
+}
+
+// In AppDelegate
+KeyboardShortcuts.onKeyUp(for: .voteUp) {
+    VoteManager.shared.voteUp()
+}
+```
+
+## Other Companion App Examples
+
+### Similar Architectures
+
+1. **Aerial Companion** - Primary reference, same sandbox workaround pattern
+2. **Menu bar utilities** - Pattern for background apps with status item
+3. **LaunchAtLogin** - `sindresorhus/LaunchAtLogin` for startup management
+
+### macOS Tahoe (26) Notes
+
+Screen Saver preferences are now a modal dialog inside Wallpaper preferences, not a standalone pane. The command `open x-apple.systempreferences:com.apple.ScreenSaver-Settings.extension` no longer works.

@@ -269,3 +269,48 @@ Companion installs screensaver automatically:
 - **Unit tests:** Cache manager, sheep parser, LRU logic
 - **Integration tests:** Download flow with mocked responses
 - **Manual testing:** macOS 10.15, 11, 12, 13, 14
+
+## OpenGL Status (January 2026)
+
+### Current State
+
+OpenGL is **deprecated but functional** on macOS:
+
+| Aspect | Status |
+|--------|--------|
+| API Version | OpenGL 4.1 (legacy implementation) |
+| Deprecated Since | macOS 10.14 Mojave (2018) |
+| Still Working | Yes, as of macOS 15 Sequoia |
+| Removal Timeline | No announced date |
+
+### Our Decision
+
+**Keep OpenGL** for the screensaver renderer. Rationale:
+
+1. **Dual-blend crossfade** requires custom shader - not trivial to replace
+2. **Battle-tested code** in `DisplayOutput/OpenGL/RendererGL.cpp`
+3. **No removal timeline** - Apple hasn't announced when OpenGL will stop working
+4. **Metal migration** would be significant effort with no immediate benefit
+
+### Risk Mitigation
+
+1. **Monitor Apple announcements** for deprecation warnings
+2. **Metal port** could be future v2.0 work if needed
+3. **MoltenVK** as intermediate option (Vulkan → Metal translation)
+
+### Compiler Warnings
+
+Suppress OpenGL deprecation warnings in build settings:
+
+```bash
+# In Xcode Build Settings
+OTHER_CFLAGS = -Wno-deprecated-declarations
+```
+
+Or per-file:
+```c
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#include <OpenGL/gl.h>
+#pragma clang diagnostic pop
+```
