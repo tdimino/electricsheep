@@ -1,4 +1,4 @@
-<div align="center">
+<p align="center">
 <pre>
  _____ _           _        _        ____  _
 | ____| | ___  ___| |_ _ __(_) ___  / ___|| |__   ___  ___ _ __
@@ -6,13 +6,16 @@
 | |___| |  __/ (__| |_| |  | | (__   ___) | | | |  __/  __/ |_) |
 |_____|_|\___|\___|\__|_|  |_|\___| |____/|_| |_|\___|\___|  __/
                                                            |_|
-                  macOS Companion App Project
 </pre>
-</div>
+</p>
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![macOS](https://img.shields.io/badge/macOS-10.15+-brightgreen.svg)](https://www.apple.com/macos/)
-[![Status](https://img.shields.io/badge/Status-Planning-yellow.svg)](ROADMAP.md)
+<h3 align="center">macOS Companion App Project</h3>
+
+<p align="center">
+  <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"><img src="https://img.shields.io/badge/License-GPL%20v2-blue.svg" alt="License: GPL v2"></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-10.15+-brightgreen.svg" alt="macOS"></a>
+  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/Status-Planning-yellow.svg" alt="Status"></a>
+</p>
 
 ---
 
