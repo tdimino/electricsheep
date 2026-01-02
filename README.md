@@ -13,8 +13,8 @@
 
 <p align="center">
   <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"><img src="https://img.shields.io/badge/License-GPL%20v2-blue.svg" alt="License: GPL v2"></a>
-  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-10.15+-brightgreen.svg" alt="macOS"></a>
-  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/Status-Planning-yellow.svg" alt="Status"></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-12.0+-brightgreen.svg" alt="macOS"></a>
+  <a href="ROADMAP.md"><img src="https://img.shields.io/badge/Status-Phase%202%20Complete-blue.svg" alt="Status"></a>
 </p>
 
 ---
@@ -52,7 +52,15 @@ A **Companion App** that runs outside the sandbox:
 
 ## Current Status
 
-**Phase 0: Planning Complete** - See [ROADMAP.md](ROADMAP.md) for details.
+**Phase 2: Companion App Complete** - The menu bar companion app is working and downloading sheep!
+
+- ✅ Menu bar app with sheep count badge
+- ✅ Fetches sheep list from sheepserver.net
+- ✅ Downloads sheep to local cache
+- ✅ Configurable cache size (1-20 GB)
+- 🔲 Screensaver integration (Phase 3)
+
+See [ROADMAP.md](ROADMAP.md) for full progress.
 
 ## Quick Links
 
@@ -63,22 +71,32 @@ A **Companion App** that runs outside the sandbox:
 
 ## Installation
 
-*Coming soon!* For now, Electric Sheep only works as a regular application on modern macOS.
+### Companion App (Downloads Sheep)
 
-**Current workaround:**
-1. Download Electric Sheep from [electricsheep.org](https://electricsheep.org)
-2. Run it as a regular app (not as a screensaver)
-3. Leave it running to download sheep
-
-## Building from Source
+Requires macOS 12.0+ and Xcode.
 
 ```bash
-# Clone this fork
-git clone https://github.com/YOUR_USERNAME/electricsheep.git
-cd electricsheep
+# Clone and build
+git clone https://github.com/tdimino/electricsheep.git
+cd electricsheep/Companion/ElectricSheepCompanion
 
-# Open the Xcode project
-open client_generic/MacBuild/ElectricSheep.xcodeproj
+# Install XcodeGen if needed
+brew install xcodegen
+
+# Build and run
+xcodegen generate
+xcodebuild -scheme ElectricSheepCompanion -configuration Release build
+open ~/Library/Developer/Xcode/DerivedData/ElectricSheepCompanion-*/Build/Products/Release/ElectricSheepCompanion.app
+```
+
+The app appears in your menu bar and starts downloading sheep automatically.
+
+### Screensaver
+
+*Coming in Phase 3* - For now, you can play downloaded sheep with:
+
+```bash
+open ~/Library/Application\ Support/ElectricSheep/sheep/free/*.avi
 ```
 
 ## Contributing
