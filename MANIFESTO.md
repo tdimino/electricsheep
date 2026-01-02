@@ -91,17 +91,24 @@ A simplified screensaver that:
 
 - **Reads pre-downloaded sheep** from the shared cache
 - **Displays animations** without network access
-- **Signals the companion app** (via shared file/XPC) when active
+- **Reports playback** via distributed notifications (for LRU tracking)
+- **Shows vote feedback** overlay when companion sends notification
 - **Minimal footprint** - just video playback
 
 #### 3. Shared Data Layer
 
 - **Cache Directory**: `~/Library/Application Support/ElectricSheep/`
-  - `sheep/` - Downloaded sheep video files
-  - `genomes/` - Sheep genome data
-  - `config.plist` - Shared configuration
-  - `active.flag` - Screensaver active indicator
-- **Communication**: File-based signaling or XPC service
+  - `sheep/free/` - Free sheep videos (gen 0-9999)
+  - `sheep/gold/` - Gold sheep videos (gen 10000+)
+  - `downloads/` - In-progress downloads (.tmp files)
+  - `metadata/` - Sheep metadata JSON files
+  - `playback.json` - LRU tracking (sheep ID → last played timestamp)
+  - `config.json` - User preferences
+  - `offline_votes.json` - Queued offline votes
+- **Communication**: Distributed notifications (CFNotificationCenter)
+  - Real-time, no polling required
+  - Works across sandbox boundaries
+  - No race conditions
 
 ## Technical Approach
 
@@ -128,83 +135,130 @@ A simplified screensaver that:
 
 ### Phase 2: Companion App Development
 
-**Create Swift/Objective-C Menu Bar App:**
+**Create Swift + ObjC++ Menu Bar App:**
 
-```swift
-// ElectricSheepCompanion/AppDelegate.swift
-class AppDelegate: NSObject, NSApplicationDelegate {
-    var statusItem: NSStatusItem!
-    var sheepDownloader: SheepDownloader!
-    var frameRenderer: DistributedRenderer!
-    var cacheManager: CacheManager!
+The companion app uses an ObjC++ bridge layer to reuse battle-tested C++ networking code while providing a modern Swift UI.
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        setupMenuBar()
-        setupBackgroundServices()
-        startSheepSync()
-    }
-}
 ```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ElectricSheepCompanion.app                   │
+│                         (Swift + ObjC++)                        │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
+│  │  Menu Bar   │  │ Preferences │  │   Download Manager      │  │
+│  │  (SwiftUI)  │  │  (SwiftUI)  │  │   (GCD + Closures)      │  │
+│  └──────┬──────┘  └──────┬──────┘  └───────────┬─────────────┘  │
+│         │                │                     │                │
+│  ┌──────┴────────────────┴─────────────────────┴──────────────┐ │
+│  │                   ESCompanionBridge.mm                      │ │
+│  │              (Objective-C++ Wrapper Layer)                  │ │
+│  └──────────────────────────┬──────────────────────────────────┘ │
+│                             │                                    │
+│  ┌──────────────────────────┴──────────────────────────────────┐ │
+│  │              C++ Core (Reused from client_generic)          │ │
+│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │ │
+│  │  │ Networking   │  │ SheepParser  │  │  TinyXML         │   │ │
+│  │  │ (libcurl)    │  │              │  │                  │   │ │
+│  │  └──────────────┘  └──────────────┘  └──────────────────┘   │ │
+│  └─────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Technical Decisions:**
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Concurrency | GCD + Closures | macOS 10.15 Catalina compatible (no async/await) |
+| Threading | C++ owns threads | Swift receives callbacks via completion handlers |
+| Bridge API | ObjC++ wrapper | Isolates C++ memory from ARC, proven pattern |
+| XML Parsing | Keep tinyXml in C++ | Reuse existing parser, return Swift structs |
 
 **Core Services:**
 
 | Service | Responsibility |
 |---------|---------------|
-| `SheepDownloader` | Fetch sheep from `*.sheepserver.net` |
+| `SheepDownloader` | Fetch sheep from `*.sheepserver.net` via C++ bridge |
 | `CacheManager` | Manage `~/Library/Application Support/ElectricSheep/` |
-| `DistributedRenderer` | Render frames for server upload |
-| `VoteProcessor` | Handle keyboard voting when enabled |
-| `AutoUpdater` | Check and install updates for both components |
-| `ServerCommunicator` | HTTP/HTTPS communication with Electric Sheep servers |
+| `VoteProcessor` | Handle voting via global hotkeys + immediate server POST |
+| `NotificationBridge` | CFNotificationCenter for screensaver IPC |
+| `GlobalHotkeyManager` | Register Cmd+Up/Down for voting |
+| `AutoUpdater` | Sparkle framework for updates (v1.1+) |
 
 ### Phase 3: Screensaver Simplification
 
-**Modify Screensaver to Read-Only Mode:**
+**Key Decision: Keep C++ OpenGL**
 
-```objective-c
-// ElectricSheepSaver.m
-@interface ElectricSheepView : ScreenSaverView
-@property (nonatomic, strong) AVPlayer *player;
-@property (nonatomic, strong) NSArray<NSURL *> *sheepQueue;
-@end
+After research, we're keeping the existing C++ OpenGL rendering rather than migrating to AVPlayer. This preserves Electric Sheep's signature **dual-blend crossfade** effect where two sheep videos are alpha-blended simultaneously during transitions.
 
-@implementation ElectricSheepView
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Renderer | Keep C++ OpenGL | Preserves dual-blend crossfade |
+| C++ Scope | Strip to display-only | Remove network/voting code |
+| Vote Overlay | Reuse OpenGL HUD | Existing Hud.h system |
+| Companion Detection | Ping/pong (2s timeout) | ESPing → wait → ESPong |
+| Multi-Monitor | Same content synced | Shared static variables |
+| Preview Mode | Animated logo only | No video decode |
+| Empty Cache | Static message + logo | "Downloading sheep..." |
 
-- (void)startAnimation {
-    [super startAnimation];
-    [self loadSheepFromCache];
-    [self signalCompanionAppActive:YES];
-    [self playNextSheep];
-}
+**Modified Architecture:**
 
-- (void)loadSheepFromCache {
-    NSString *cachePath = [@"~/Library/Application Support/ElectricSheep/sheep"
-                           stringByExpandingTildeInPath];
-    // Read cached sheep files
-}
-
-@end
 ```
+ElectricSheep.saver (Simplified)
+├── ESScreensaverView.m (simplified)
+├── ESCacheReader (new - reads sheep/)
+├── ESNotificationHandler (new - IPC)
+│
+├── C++ Core (Stripped Down):
+│   ├── FrameDisplay.h (preserved - dual-blend)
+│   ├── CrossFade.h (preserved - transitions)
+│   ├── RendererGL.cpp (preserved - OpenGL)
+│   ├── ContentDecoder.cpp (preserved - FFmpeg)
+│   └── Hud.h (preserved - vote overlay)
+│
+└── REMOVED:
+    ├── ContentDownloader/
+    ├── Networking/
+    └── SheepUploader.cpp
+```
+
+See `plans/phase-3-screensaver-simplification.md` for full details.
 
 ### Phase 4: Inter-Process Communication
 
-**Option A: File-Based Signaling (Simpler)**
-```
-~/Library/Application Support/ElectricSheep/
-├── active.flag          # Created when screensaver starts
-├── vote.pending         # Contains vote data for companion to process
-└── config.json          # Shared configuration
-```
+**Method: Distributed Notifications (CFNotificationCenter)**
 
-**Option B: XPC Service (More Robust)**
-```swift
-// XPC Service in Companion App
-class SheepXPCService: NSObject, SheepXPCProtocol {
-    func requestNextSheep(reply: @escaping (URL?) -> Void)
-    func submitVote(sheepId: String, vote: Int)
-    func reportPlaybackStatus(sheepId: String, position: Double)
-}
-```
+Distributed notifications are the best balance of simplicity and real-time capability for screensaver ↔ companion communication.
+
+| Criteria | Distributed Notifications | File-Based | XPC Service |
+|----------|--------------------------|------------|-------------|
+| Complexity | Low | Low | High |
+| Real-time | Yes | No (polling) | Yes |
+| Sandbox compatible | Yes | Yes | Complex |
+| Race conditions | None | Possible | None |
+
+**Notification Protocol (9 notifications):**
+
+Payloads encoded as notification name suffix (e.g., `org.electricsheep.SheepPlaying.248=12345=0=240`)
+
+| Notification | Direction | Purpose |
+|--------------|-----------|---------|
+| `ESPing` | Saver → Companion | Check if companion running |
+| `ESPong` | Companion → Saver | Companion is alive |
+| `ESCompanionLaunched` | Companion → Saver | Broadcast on startup (capabilities: `voting=1,rendering=0,gold=0`) |
+| `ESCacheUpdated` | Companion → Saver | Reload cache |
+| `ESVoteFeedback` | Companion → Saver | Show vote overlay (`.up`/`.down` suffix) |
+| `ESQueryCurrent` | Companion → Saver | Request current sheep |
+| `ESSheepPlaying` | Saver → Companion | Report current sheep (ID in suffix) |
+| `ESPlaybackStarted` | Saver → Companion | Update LRU timestamp (ID in suffix) |
+| `ESCorruptedFile` | Saver → Companion | Request re-download (ID in suffix, high priority) |
+
+**Voting Flow:**
+1. User presses Cmd+Up (global hotkey)
+2. Companion sends `ESQueryCurrent` notification
+3. Screensaver responds with `ESSheepPlaying` (sheep ID)
+4. Companion POSTs vote to server immediately
+5. Companion sends `ESVoteFeedback` notification
+6. Screensaver shows subtle overlay (↑ or ↓)
 
 ### Phase 5: Server Communication
 
@@ -342,19 +396,26 @@ class SheepXPCService: NSObject, SheepXPCProtocol {
 
 ## Implementation Priority
 
-1. **MVP (Minimum Viable Patch)**
+1. **v1.0.0 - MVP (Minimum Viable Product)**
    - Companion app that downloads sheep in background
    - Modified screensaver that reads from shared cache
-   - Basic settings UI
+   - Voting via global hotkeys (Cmd+Up/Down)
+   - Subtle vote feedback overlay on screensaver
+   - Menu bar presence with sheep count
+   - Basic preferences window (cache size, launch at login)
+   - Companion installs screensaver automatically
+   - Distributed notifications IPC
 
-2. **Phase 2**
-   - Voting functionality
-   - Gold Sheep authentication
-   - Auto-update system
+2. **v1.1.0 - Enhanced Features**
+   - Gold Sheep authentication (1280x720 content)
+   - Keychain + iCloud sync for credentials
+   - Auto-update via Sparkle framework
+   - Anonymous usage analytics (opt-in)
 
-3. **Phase 3**
+3. **v2.0.0 - Full Parity**
    - Distributed rendering contribution
-   - Apple Silicon optimization
+   - Universal Binary (Intel + Apple Silicon optimized)
+   - Homebrew cask formula
    - Advanced settings
 
 ---

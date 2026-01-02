@@ -23,8 +23,8 @@ GET {REDIRECT_SERVER}/query.php?q=redir&u={username}&p={password}&v={version}&i=
 |-------|-------------|
 | `u` | URL-encoded username |
 | `p` | URL-encoded password hash |
-| `v` | Client version (e.g., "3.0.3") |
-| `i` | Unique installation ID |
+| `v` | Client version (e.g., `OSX_C_1.0.0` for companion) |
+| `i` | Unique installation ID (UUID) |
 
 **Response:**
 ```xml
@@ -153,25 +153,29 @@ GET {renderServerName}/cgi/get?n={nickName}&w={userUrl}&v={version}&u={uniqueID}
 Submit a vote for a sheep.
 
 ```
-POST {voteServerName}/vote
-Content-Type: application/json
-
-{
-  "sheep_id": "12345",
-  "vote": 1,
-  "user_id": "anonymous"
-}
+GET {voteServerName}/cgi/vote.cgi?id={sheep_id}&vote={vote}&u={uuid}
 ```
 
-**Vote Values:**
-- `1` = Up vote
-- `-1` = Down vote
-- `0` = Neutral/reset
+**Parameters:**
+| Param | Description |
+|-------|-------------|
+| `id` | Sheep ID to vote on |
+| `vote` | Vote value: `1` (up) or `-1` (down) |
+| `u` | Unique client ID (UUID) |
+
+**Example:**
+```
+GET v2d7c.sheepserver.net/cgi/vote.cgi?id=12345&vote=1&u=550e8400-e29b-41d4
+```
 
 **Response:**
-```json
-{"status": "ok", "new_rating": 86}
-```
+- `302` - Redirect (normal success)
+- `200` - Success (alternate)
+- `401` - Auth failed
+
+**Offline Behavior:**
+- Online: Submit immediately, silent fail on error
+- Offline: Queue vote locally, retry once when network returns
 
 ---
 
@@ -233,6 +237,26 @@ Stored in Keychain on macOS.
 
 ---
 
+## Cache Structure
+
+Local cache separates free and Gold content:
+
+```
+~/Library/Application Support/ElectricSheep/
+├── sheep/
+│   ├── free/                         # Free sheep (gen 0-9999)
+│   │   └── 248=12345=11111=22222.avi
+│   └── gold/                         # Gold sheep (gen 10000+)
+│       └── 10248=99999=55555=66666.avi
+├── downloads/                        # In-progress (.tmp files)
+├── metadata/                         # Sheep metadata JSON
+├── playback.json                     # LRU tracking
+├── config.json                       # User preferences
+└── offline_votes.json                # Queued offline votes
+```
+
+---
+
 ## Rate Limits
 
 | Endpoint | Limit |
@@ -246,15 +270,23 @@ Stored in Keychain on macOS.
 
 ## Security Notes
 
-### Current Issues
-- SSL verification disabled in client
-- HTTP fallback allowed
+### SSL Configuration
+- **SSL verification disabled** for `sheepserver.net` (self-signed certificate)
+- SSL verification **enabled** for CDNs (archive.org, cloudfront.net)
+- Server uses self-signed cert that Apple would reject; this is acceptable because:
+  - Not distributed via App Store (direct download + Homebrew instead)
+  - Matches existing client behavior
+  - No sensitive data transmitted (just sheep IDs and votes)
 
-### Recommendations
-- Enable SSL verification
-- Use HTTPS exclusively
-- Implement certificate pinning
-- Store credentials in Keychain only
+### Credentials
+- Stored in Keychain only (never in plain text)
+- Optional iCloud sync for multi-Mac users
+- Password hashed with MD5 before storage/transmission
+
+### Distribution
+- **Direct download** from website (primary)
+- **Homebrew cask** (secondary)
+- Not App Store (would reject disabled SSL verification)
 
 ---
 

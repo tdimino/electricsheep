@@ -6,13 +6,21 @@
 
 ```
 ElectricSheep/
-├── mpeg/           # Downloaded sheep videos
-├── xml/            # Server lists, genomes
-├── jpeg/           # Rendered frames for upload
-└── .instance-lock  # Process lock file
+├── sheep/
+│   ├── free/           # Free sheep (gen 0-9999)
+│   └── gold/           # Gold sheep (gen 10000+)
+├── downloads/          # In-progress (.tmp files)
+├── metadata/           # Sheep metadata JSON
+├── lists/              # Server lists (cached XML)
+├── playback.json       # LRU tracking
+├── config.json         # User preferences
+├── offline_votes.json  # Queued offline votes
+└── .instance-lock      # Process lock file
 ```
 
-## Video Files (mpeg/)
+**Note:** Legacy clients used `mpeg/` and `xml/` directories. Companion app uses the new structure above.
+
+## Video Files (sheep/)
 
 ### Filename Format
 ```

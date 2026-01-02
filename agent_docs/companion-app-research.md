@@ -88,25 +88,26 @@ Screensaver becomes read-only display component.
 ### Shared Cache Location
 ```
 ~/Library/Application Support/ElectricSheep/
-├── mpeg/           # Downloaded sheep videos
-├── xml/            # Server lists, genomes
-├── jpeg/           # Rendered frames
-├── active.flag     # IPC: screensaver running
-├── current.json    # IPC: currently playing
-└── vote.pending    # IPC: vote requests
+├── sheep/
+│   ├── free/           # Free sheep (gen 0-9999)
+│   └── gold/           # Gold sheep (gen 10000+)
+├── downloads/          # In-progress (.tmp files)
+├── metadata/           # Sheep metadata JSON
+├── lists/              # Cached server XML
+├── playback.json       # LRU tracking
+├── config.json         # User preferences
+└── offline_votes.json  # Queued offline votes
 ```
 
-### IPC Options
+**Note:** Legacy client used `mpeg/` and `xml/`. Companion app uses new structure above.
 
-**Option A: File-Based (MVP)**
-- Simple, no entitlements needed
-- Polling required (not real-time)
-- Easy to debug (check files)
+### IPC Method: Distributed Notifications
 
-**Option B: XPC Service (Future)**
-- Real-time communication
-- Complex setup
-- May have sandbox issues
+**Chosen approach: CFNotificationCenter (9 notifications)**
+- Real-time, no polling required
+- Works across sandbox boundaries
+- Payloads encoded as notification name suffix
+- See `plans/phase-4-ipc-communication.md` for protocol details
 
 ## Implementation Language
 

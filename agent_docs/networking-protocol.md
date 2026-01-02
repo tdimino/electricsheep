@@ -29,7 +29,10 @@ Cache duration: 24 hours
 ### 2. Sheep List
 ```
 GET {serverName}/cgi/list?v={CLIENT_VERSION}&u={uniqueID}
+
+Example: v2d7c.sheepserver.net/cgi/list?v=OSX_C_1.0.0&u=550e8400-e29b-41d4
 ```
+- Version string: `OSX_C_1.0.0` ('C' prefix distinguishes companion from legacy client)
 **Response:** gzip-compressed XML
 ```xml
 <list gen="42">
@@ -59,10 +62,13 @@ GET {renderServerName}/cgi/get?n={nickName}&w={userUrl}&v={version}&u={uniqueID}
 
 ### 5. Vote Submission
 ```
-POST {voteServerName}/vote
-Content-Type: application/json
-{"sheep_id": "12345", "vote": 1}
+GET {voteServerName}/cgi/vote.cgi?id={sheep_id}&vote={vote}&u={uuid}
+
+Example: v2d7c.sheepserver.net/cgi/vote.cgi?id=12345&vote=1&u=550e8400-e29b-41d4
 ```
+- `vote`: `1` (up) or `-1` (down)
+- Response: 302 redirect (success) or 401 (auth failed)
+- Offline: Queue locally, retry once when network returns
 
 ### 6. Frame Upload (distributed rendering)
 ```
@@ -104,12 +110,17 @@ PerformUpload(url, file, size)  // Upload file via PUT
 
 ## Security Notes
 
-SSL verification is **disabled** in the codebase:
+SSL verification is **disabled** for `sheepserver.net` (self-signed certificate):
 ```cpp
 curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYHOST, 0);
 curl_easy_setopt(m_pCurl, CURLOPT_SSL_VERIFYPEER, 0);
 ```
-URLs are forced to HTTPS in `Sheep::setURL()`.
+
+**Why this is acceptable:**
+- Not distributed via App Store (direct download + Homebrew)
+- Matches existing client behavior
+- No sensitive data transmitted
+- SSL enabled for CDNs (archive.org, cloudfront)
 
 ## Retry Logic
 

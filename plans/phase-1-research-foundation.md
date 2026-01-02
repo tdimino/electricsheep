@@ -70,9 +70,9 @@ Build a comprehensive understanding of the Electric Sheep codebase and the Aeria
 
 **Protocol Details:**
 - HTTP/HTTPS on ports 80/443
-- XML-based genome format
-- MPEG2 video downloads
-- Vote submission API
+- XML-based genome format (gzip compressed)
+- H.264 video in AVI container (not MPEG2)
+- Vote submission via GET request
 
 **Deliverables:**
 - [x] Document all API endpoints (`docs/server-api-reference.md`)
@@ -85,6 +85,21 @@ Build a comprehensive understanding of the Electric Sheep codebase and the Aeria
 - [x] Decision document: what to reuse vs. rewrite (`plans/decision-reuse-vs-rewrite.md`)
 - [x] API documentation for Electric Sheep servers (`docs/server-api-reference.md`)
 - [x] Aerial Companion patterns documented (`agent_docs/companion-app-research.md`)
+
+## Key Findings
+
+Research outcomes that informed Phases 2-5:
+
+| Finding | Impact | Decision |
+|---------|--------|----------|
+| SSL disabled for sheepserver.net (self-signed cert) | Can't distribute via App Store | Direct download + Homebrew |
+| C++ networking code is battle-tested (13K lines) | Worth reusing via bridge | ObjC++ bridge layer in Phase 2 |
+| Dual-blend crossfade requires OpenGL | Can't use simple AVPlayer | Keep C++ renderer in Phase 3 |
+| CFNotificationCenter works across sandbox | Simpler than XPC | Distributed notifications for IPC |
+| Vote endpoint is GET, not POST | Documented incorrectly elsewhere | Corrected in Phase 5 |
+| Server list has 1-hour TTL | Must honor to be server-friendly | Cache TTL in Phase 5 |
+| Free/Gold sheep have different CDNs | Need separate cache dirs | `sheep/free/` and `sheep/gold/` |
+| Version string identifies client | Server logs distinguish clients | `OSX_C_1.0.0` format |
 
 ## Status: COMPLETE (January 2026)
 

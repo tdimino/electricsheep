@@ -1,0 +1,18 @@
+0.1.0-planning
+
+# Electric Sheep Companion App Version
+#
+# Format: MAJOR.MINOR.PATCH[-stage]
+#
+# Stages:
+#   -planning  : Design and documentation phase
+#   -alpha     : Initial implementation, unstable
+#   -beta      : Feature complete, testing
+#   (none)     : Release candidate / stable
+#
+# Version History:
+#   0.1.0-planning : Initial planning complete (Phases 1-5 documented)
+#
+# Server Version String: OSX_C_1.0.0
+#   - 'C' prefix distinguishes companion from legacy client
+#   - Sent in all server requests (v= parameter)

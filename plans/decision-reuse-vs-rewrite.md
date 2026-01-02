@@ -30,7 +30,7 @@ Reuse:
 
 Rewrite:
 - Thread coordination (use GCD instead of boost::thread)
-- Progress reporting (use Combine/async-await)
+- Progress reporting (use GCD + closures for Catalina 10.15 compatibility)
 - Coordinator pattern for menu bar integration
 
 ### Content Decoder (`ContentDecoder.cpp` - 850 lines)
@@ -64,16 +64,31 @@ New components needed:
 ```
 ElectricSheepCompanion.app (Swift)
     │
-    ├── Swift UI layer (menus, settings)
+    ├── Swift UI layer (SwiftUI menus, settings)
     │
-    ├── Swift service layer (coordination)
+    ├── Swift service layer (GCD + closures)
     │
     └── ObjC++ Bridge (ESCompanionBridge.mm)
             │
-            ├── CSheepDownloader wrapper
-            ├── CShepherd wrapper
-            └── CNetworking wrapper
+            ├── ESNetworkBridge wrapper (libcurl)
+            ├── ESParserBridge wrapper (tinyXml)
+            └── ESTypes.h (shared types)
 ```
+
+**Key patterns:**
+- C++ owns threads, Swift receives callbacks
+- dispatch_once for singleton initialization
+- Meyers singleton in C++, clean ObjC singleton API for Swift
+
+## IPC Strategy
+
+**Decision: Distributed Notifications (CFNotificationCenter)**
+
+Chosen over file-based signaling or XPC:
+- Real-time, no polling
+- Works across sandbox boundaries
+- Low overhead, no disk I/O
+- Simpler than XPC for this use case
 
 ## Estimated Effort
 
